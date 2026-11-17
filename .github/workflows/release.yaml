@@ -3,8 +3,17 @@ on:
   push:
     branches: [test, master]
     tags: ['v*', '*_test']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing immutable release tag
+        required: true
+        default: 1.1.0_test
+        type: string
 permissions:
   contents: read
+env:
+  RELEASE_TAG: ${{ inputs.tag || (github.ref_type == 'tag' && github.ref_name) || '1.1.0_test' }}
 concurrency:
   group: client-${{ github.ref }}
   cancel-in-progress: false
@@ -15,24 +24,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ inputs.tag || github.ref_name }}
           fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Check complete public tree and reachable history
-        run: python scripts/client_release.py check --tag 1.1.0_test
+        run: python scripts/client_release.py check --tag "$RELEASE_TAG"
       - name: Build reviewed client files
         env:
           CLIENT_OUTPUT: ${{ runner.temp }}/client-output
-        run: python scripts/client_release.py build --tag 1.1.0_test --output "$CLIENT_OUTPUT"
+        run: python scripts/client_release.py build --tag "$RELEASE_TAG" --output "$CLIENT_OUTPUT"
       - uses: actions/upload-artifact@v4
         with:
-          name: client-1.1.0_test
-          path: ${{ runner.temp }}/client-output/1.1.0_test/
+          name: client-${{ env.RELEASE_TAG }}
+          path: ${{ runner.temp }}/client-output/${{ env.RELEASE_TAG }}/
           if-no-files-found: error
   publish:
-    if: github.ref_type == 'tag'
+    if: github.ref_type == 'tag' || github.event_name == 'workflow_dispatch'
     needs: check
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -41,6 +51,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ inputs.tag || github.ref_name }}
           fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-python@v5
@@ -48,12 +59,12 @@ jobs:
           python-version: '3.12'
       - uses: actions/download-artifact@v4
         with:
-          name: client-1.1.0_test
+          name: client-${{ env.RELEASE_TAG }}
           path: ${{ runner.temp }}/client-artifacts
       - name: Recheck, upload, download-verify and publish
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CLIENT_ARTIFACTS: ${{ runner.temp }}/client-artifacts
-          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
           CI_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: python scripts/client_release.py publish --tag "$RELEASE_TAG" --output "$CLIENT_ARTIFACTS" --ci-url "$CI_URL"

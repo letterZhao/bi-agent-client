@@ -16,9 +16,9 @@
   },
   "policyVersion": "public-client-v1",
   "serverVersion": "1.1.0",
-  "sourceCommit": "df80e3a0e14ab7560585747c1c21edaad84f235a",
+  "sourceCommit": "fb00ef781fd295896a1ae17f516c32abd4c386ca",
   "supportFiles": {
-    ".github/workflows/release.yaml": "6b0dbf663414d017597eff8ce19924bce1ddcabde58bdf00e367ff05c69b1fec",
+    ".github/workflows/release.yaml": "cd78fb95d2a9e78f2c10283f06bfe90d0000821760e479cbcbce289578c888d2",
     "release-notes.md": "23e808096b42edf7ea2bb17b389926bd27ebc6c6a5a34eb24d20d88436bf2b26",
     "scripts/client_release.py": "ec6b8662222fd4ed0a29e98e4bddeb498865ec634ba85c04abbe33bf4bb38887"
   }
