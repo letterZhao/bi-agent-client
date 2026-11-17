@@ -1,0 +1,9 @@
+# Merge this section into your Codex config. Put BI_ACCESS_TOKEN in the
+# environment of the Codex process, using the personal access token cookie VALUE
+# after BI login. Codex sends it as Authorization: Bearer <PERSONAL_BI_TOKEN>.
+# Reconnect the MCP server after changes. No OAuth client configuration is needed.
+[mcp_servers.bi]
+url = "https://mcp.example.com/mcp"
+bearer_token_env_var = "BI_ACCESS_TOKEN"
+startup_timeout_sec = 30
+tool_timeout_sec = 600

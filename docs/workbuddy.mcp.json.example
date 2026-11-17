@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "bi": {
+      "type": "http",
+      "url": "https://mcp.example.com/mcp",
+      "headers": {
+        "Authorization": "Bearer <PERSONAL_BI_TOKEN>"
+      },
+      "disabled": false,
+      "timeout": 600000
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "bi": {
+      "type": "http",
+      "url": "https://mcp.example.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${BI_ACCESS_TOKEN}"
+      }
+    }
+  }
+}

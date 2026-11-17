@@ -1,0 +1,25 @@
+{
+  "audience": "public",
+  "expectedToolCount": 41,
+  "files": {
+    ".agents/skills/bi-query/SKILL.md": "0bc9d255b9543db315771ebf8371ebc83c71238fa7ac7a65ff7717ba6515dd55",
+    ".agents/skills/bi-query/references/cohort-metrics.md": "0f3c2ccf21120c9810fdf9e5204e648d613be13a56c1f72cb54f179ee091f816",
+    ".agents/skills/bi-query/references/interfaces.md": "5cc913807b101e204afd04100aab5470cc4892dfc7a1cf252c63a0934994b2cf",
+    ".agents/skills/bi-query/references/report-authorization.md": "9ad8ae5fd5ba318f11a149e9b6d8a7b94aabd1b10a71723dd405c740eb407d6b",
+    ".agents/skills/bi-query/references/report-templates.md": "b90c827ddae551213d6cf3261c6933c7db75a0a4ffe4035294c99951b09eefd0",
+    "README.md": "3f6dca0ef996fc6ed0b9aa5a4a8bcafea6d18905b095bfef50207529f04feac5",
+    "docs/claude.mcp.json.example": "76b668e5564bf587f62bbc4cbc196b27d596b6eba3f1c7eb9f60c80c38fee98e",
+    "docs/client-compatibility.md": "22a152a9cf848771e59f6f6f8c413cca875b56b9dc23f688a0439fdba6799aec",
+    "docs/codex.toml.example": "a15ccf7b9e5b1e8ddd6dda22064f3e498c44f7bb9ac10dab84048b97df2da1b2",
+    "docs/deepseek-harness.yaml.example": "8b5b11bb8d112319fc35cb8f2f1c64821874f52a030ce9cb0680885addaadad4",
+    "docs/workbuddy.mcp.json.example": "f69b8236d0e44c95c19c7f9ad1b01bc42e672f467e0d9223a8810248fcbd302d"
+  },
+  "policyVersion": "public-client-v1",
+  "serverVersion": "1.1.0",
+  "sourceCommit": "df80e3a0e14ab7560585747c1c21edaad84f235a",
+  "supportFiles": {
+    ".github/workflows/release.yaml": "6b0dbf663414d017597eff8ce19924bce1ddcabde58bdf00e367ff05c69b1fec",
+    "release-notes.md": "23e808096b42edf7ea2bb17b389926bd27ebc6c6a5a34eb24d20d88436bf2b26",
+    "scripts/client_release.py": "ec6b8662222fd4ed0a29e98e4bddeb498865ec634ba85c04abbe33bf4bb38887"
+  }
+}

@@ -1,0 +1,14 @@
+# 在 Harness 设置中的 MCP 管理器添加/合并 bi 条目；不要覆盖整个 servers 映射。
+# 下例为 0.2.2-rc.3 的 profile patch；使用配置行 id，不使用界面 include: 前缀。
+# 凭据 BI_ACCESS_TOKEN 的值仅为个人 personal access token，不包含 Bearer 前缀。
+- id: mcp-manager
+  config:
+    servers:
+      bi:
+        transport: streamable-http
+        url: https://mcp.example.com/mcp
+        headers:
+          Authorization: 'Bearer ${credential:BI_ACCESS_TOKEN}'
+        enabled: true
+        startupTimeoutMs: 30000
+        toolCallTimeoutMs: 600000
