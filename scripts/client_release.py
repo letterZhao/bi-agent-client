@@ -23,7 +23,13 @@ CLIENT_FILES = (
     SKILL + "SKILL.md",
     *(
         SKILL + "references/" + name + ".md"
-        for name in ("interfaces", "cohort-metrics", "report-templates", "report-authorization")
+        for name in (
+            "interfaces",
+            "cohort-metrics",
+            "report-templates",
+            "report-authorization",
+            "ad-performance-analysis",
+        )
     ),
     *(
         "docs/" + name
@@ -39,6 +45,9 @@ CLIENT_FILES = (
 )
 SUPPORT_FILES = ("scripts/client_release.py", ".github/workflows/release.yaml", "release-notes.md")
 TREE_FILES = set(CLIENT_FILES) | set(SUPPORT_FILES) | {"release-input.json"}
+LEGACY_1_1_CLIENT_FILES = tuple(
+    name for name in CLIENT_FILES if name != SKILL + "references/ad-performance-analysis.md"
+)
 
 
 def digest(data):
@@ -130,11 +139,11 @@ def descriptor(source_commit, version, count, files):
     }
 
 
-def validate_payload(files, metadata):
+def validate_payload(files, metadata, *, expected_files=CLIENT_FILES):
     allowed = {"sourceCommit", "serverVersion", "expectedToolCount", "audience", "policyVersion", "files"}
     if set(metadata) not in (allowed, allowed | {"supportFiles"}):
         fail("DESCRIPTOR_FIELDS")
-    if set(files) != set(CLIENT_FILES):
+    if set(files) != set(expected_files):
         fail("FILE_ALLOWLIST")
     if not re.fullmatch(r"[a-f0-9]{40}", metadata.get("sourceCommit", "")):
         fail("SOURCE_COMMIT")
@@ -195,7 +204,14 @@ def validate_tree(root):
             if any(not entry.startswith("100644 blob ") for entry in entries):
                 fail("HISTORY_FILE_TYPE")
             names = [entry.split("\t", 1)[1] for entry in entries]
-            if set(names) != TREE_FILES:
+            if "release-input.json" not in names:
+                fail("HISTORY_ALLOWLIST")
+            old_metadata = json.loads(git(root, "show", commit + ":release-input.json"))
+            historical_clients = CLIENT_FILES
+            legacy_tree = set(LEGACY_1_1_CLIENT_FILES) | set(SUPPORT_FILES) | {"release-input.json"}
+            if old_metadata.get("serverVersion") == "1.1.0" and set(names) == legacy_tree:
+                historical_clients = LEGACY_1_1_CLIENT_FILES
+            if set(names) != set(historical_clients) | set(SUPPORT_FILES) | {"release-input.json"}:
                 fail("HISTORY_ALLOWLIST")
             message = git(root, "show", "-s", "--format=%B", commit)
             if not re.fullmatch(r"Client distribution [0-9]+\.[0-9]+\.[0-9]+(?:_test)?", message):
@@ -216,8 +232,11 @@ def validate_tree(root):
                 data = subprocess.check_output(["git", "-C", str(root), "show", commit + ":" + name])
                 scan_text(name, data)
                 historical[name] = data
-            old_metadata = json.loads(historical["release-input.json"])
-            validate_payload({name: historical[name] for name in CLIENT_FILES}, old_metadata)
+            validate_payload(
+                {name: historical[name] for name in historical_clients},
+                old_metadata,
+                expected_files=historical_clients,
+            )
             if old_metadata.get("supportFiles") != {name: digest(historical[name]) for name in SUPPORT_FILES}:
                 fail("HISTORY_HASH")
         for tag in git(root, "tag", "--list").splitlines():

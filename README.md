@@ -3,6 +3,8 @@
 本仓库仅分发客户端配置、完整 Skill 和安装包，不包含服务端源码、真实业务数据或个人凭据。
 服务地址由管理员通过内部渠道提供，示例 `https://mcp.example.com/mcp` 必须在本地替换。
 
+完整 `bi-query` 包含按需读取的 `references/ad-performance-analysis.md`，可基于已支持报表分析广告效果、回收、订阅质量及系列/素材表现，并以可预览 HTML 展示来源、证据和未验证项。缺少回本目标时可先做相对比较；预算或暂停均为建议，不执行广告平台操作。无需额外安装广告分析 Skill。
+
 ## 下载与校验
 
 从本仓库对应版本的 Release 下载三个附件：客户端 TAR、Skill ZIP 和 SHA256SUMS。
@@ -10,7 +12,7 @@
 
 ```powershell
 $ErrorActionPreference = 'Stop'
-$version = '1.1.0_test'
+$version = '1.2.1_test'
 $dir = Join-Path $env:USERPROFILE "Downloads\bi-agent-$version"
 New-Item -ItemType Directory -Force -Path $dir | Out-Null
 Set-Location $dir
@@ -33,7 +35,7 @@ macOS/Linux 用户同样下载三个附件，执行 `shasum -a 256 -c SHA256SUMS
 ## Windows Codex App：无需 CLI
 
 1. 在文件资源管理器中解压 Skill ZIP，把整个 `bi-query` 文件夹复制到
-   `%USERPROFILE%\.agents\skills\`。保留 SKILL.md、四个 references 和 release.json。
+   `%USERPROFILE%\.agents\skills\`。保留 SKILL.md、全部 references（含 ad-performance-analysis.md）和 release.json。
    已有同名文件夹时先备份到技能扫描目录之外，不直接覆盖个人修改。
 2. 登录管理员提供的 BI 网站，从自己的登录会话取得访问凭据。
    在 Windows“编辑账户的环境变量”中新增用户变量 `BI_ACCESS_TOKEN`，值仅为个人 token，
@@ -63,7 +65,7 @@ WSL 或远程执行环境需要在实际执行 Agent 的环境安装和配置，
 已安装 Git 和 Node.js ≥22.20 的用户，可在项目目录执行：
 
 ```bash
-npx --yes skills@1.9.0 add 'https://github.com/letterZhao/bi-agent-client.git#1.1.0_test' --skill bi-query --agent codex --copy --yes
+npx --yes skills@1.9.0 add 'https://github.com/letterZhao/bi-agent-client.git#1.2.1_test' --skill bi-query --agent codex --copy --yes
 ```
 
 Claude Code 改用 `--agent claude-code`。无需 Node.js 的用户直接安装 ZIP。

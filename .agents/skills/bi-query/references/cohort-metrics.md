@@ -6,6 +6,9 @@
 |---|---|---|---|
 | IAA 同期表 | `bi_synchronism_report_list_new` | `whetherCohort: true`；`timeZone: Asia/Shanghai` 对应网页选择 | 行的直接字段 |
 | IAP 同期表 | `bi_iap_subscribe_report` | 北京时间 `subTimeZone: 8`；UTC `0` | 行的直接字段 |
+| 项目总表 | `bi_synthesize_report_list_new` | 按契约选择时间及分组 | 行的直接字段 |
+| 用户标签分析 | `bi_query_ab_ltv_index_page` | 北京时间 `subTimeZone: 8`；UTC `0` | 行的直接字段 |
+| 同期续订退款表 | `bi_iap_renew_refund_report` | 北京时间 `subTimeZone: 8`；UTC `0` | 行内 `metrics` 字典 |
 | ROI 趋势表 | `bi_iap_cohort_roi_trend_report` | 北京时间 `subTimeZone: 8`；UTC `0` | 行内 `metrics` 字典 |
 
 三张表按“日期、项目代号”分组时使用 `groupList: "day,app"`、`dimensionChecked: ["day", "app"]`；`dateDimension: "day"` 选择日粒度。不能把中文“日期”猜成 `date` 分组字段。
@@ -27,7 +30,7 @@
 | `total_roi_d7` | `metrics.totalRoiD7` | ROI 趋势 Day7 总 ROI |
 | `quarterly_roi_d740` | `metrics.quarterlyRoiD740` | ROI 趋势 Day740 季订阅 ROI |
 
-IAA 同期表有 14 个指标组，包含广告类型、留存、卸载、LTV、每日收入和每日 ROI。IAP 有 7 组：ROI、取消率、退款率、计费重试人数、计费重试率、试用率、试用转标率。ROI 趋势含总、广告、全部订阅、周/月/季/年订阅 7 种类型，周期为 Day0—365 以及 370、540、730、740；周期不是查询日期区间，也不证明历史样本已经成熟。
+IAA 同期表有 14 个指标组，包含广告类型、留存、卸载、LTV、每日收入和每日 ROI。IAP 有 9 组：ROI、取消率、退款率、计费重试人数、计费重试率、试用率、试用转标率、周订阅首次续订人数、周订阅首次续订率。ROI 趋势含总、广告、全部订阅、周/月/季/年订阅 7 种类型，后端支持完整 Day0—740（网页只列部分周期）；周期不是查询日期区间，也不证明历史样本已经成熟。
 
 ROI 趋势的确切前缀如下；选择值是前缀加 `_d` 加周期，例如 Day7 广告 ROI 为 `iaa_roi_d7`。请按资源核对生成规则，可通过 `bi://cohort/bi_iap_cohort_roi_trend_report/iaa_roi_d7` 单独核验，避免读取数千个选项导致截断。返回路径在 `metrics` 中，按资源返回值读取，不能用默认累计 `totalRoi` 替代指定周期。
 
@@ -47,6 +50,12 @@ IAA 同期 `roiD*`、`retentionRateD*`、`uninstallUsersRate*` 的原始比值�
 
 IAP 的 `day7Roi`、`cohortWeeklyUnsubscribeRatioD0` 不支持非空数值筛选；MCP 对这两个非空条件返回 `FILTER_NOT_SUPPORTED` 并拒绝查询。不能删除用户条件、改为全部或在当前页自行过滤后宣称全量筛选已完成。可以按用户明确要求查询对应展示列；展示选择与数值筛选分别处理。其他比值筛选的阈值须核对原始单位，不能从返回百分数推定。
 
-IAA `cohortMetricFilters` 仅接受契约白名单中的展示次数/人均展示次数及已登记操作符，不能把留存率等任意指标放入该筛选字典。ROI 趋势的展示指标不自动具有同名筛选参数。
+IAA `cohortMetricFilters` 仅接受契约白名单中的展示次数/人均展示次数/ECPM 及已登记操作符，不能把留存率等任意指标放入该筛选字典。ROI 趋势的展示指标不自动具有同名筛选参数。
 
 保留 `null`、缺失字段和零的区别。未成熟、零分母、字段裁剪或无样本不自行解释成零；只在有有效契约和实际证据时说明原因。回答同时列出查询日期范围和同期群周期。
+
+同期续订退款表按 `renew_purchasers` 和 `renew_rate` 两个父字段授权，四种订阅类型各支持第 1～200 次续订。例如 `weekly_renew_rate_d1` 返回 `metrics.weeklyRenewRateD1`；`d1` 在此表示续订次数，不是 Day1。显式字段、模板和返回投影均按当前用户的父字段、订阅类型及期数权限校验。中台全量定义不能代替当前账号权限。
+
+IAP ROI 的周期按类型分别限定：`roi` 为 D0/3/7/10/14/17；`weekly_roi` 为 D0/3/7/10/14/17/21/28/35/42/45；`iaa_roi`、月/季/年 ROI 为 D0/3/7/14/17/21/28/35/42/45。两组首次周续订指标也采用后一组周期。不能从中台的类型与周期列表任意做笛卡尔积。用户标签 LTV 支持 D0/1/3/7/14/30，中台中的 D5 在当前固定前后端源码均不受支持，查询须拒绝。
+
+动态选择值、父权限和返回路径使用同一有限注册表。`bi://cohort/{tool_name}/{selector}` 也能读取源码支持、但未在静态网页数组完整列出的动态字段。接口中出现零、null 或缺失仍按真实响应保留；完整映射不代表每个周期已有非空业务样本。
