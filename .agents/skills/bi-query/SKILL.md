@@ -29,13 +29,14 @@ description: 使用已鉴权的 BI MCP 查询项目、报表、用户保存的�
    完整契约过长或被截断时，按单字段读取 `bi://input/{tool_name}/{field_name}`；按确切选择值读取 `bi://cohort/{tool_name}/{selector}`，取得真实 `responsePath`。这些是鉴权资源，不发起业务查询。用户已指定指标时，不能因截断省略 `showColChecked` 改查默认列并报告完成。
 5. 缺少用户必须确定的日期、时区或指标时先追问；分析目标缺失按上述分析路由处理。通过 `bi_get_avail_project` 获取真实项目候选；国家/地区用 `bi_get_country_list` 返回的 `country`，投放/买量渠道用 `bi_get_channel_list` 返回的 `label`（不是 `value`），分别用于 `countryCodeList` 和 `networkNameList`。投放渠道与变现渠道 `adNetworkNameList` 不同。国家工具可选 `country` 为模糊搜索词，搜索结果不能证明未返回值不存在；服务端校验始终读取完整候选。候选字典存在只证明参数合法，不证明业务数据权限。其他候选来自对应维度工具。不得猜测、拼造或替换查询参数。服务端会重新校验权限，不把之前聊天中的候选当作长期授权。
    用户标签分析和 IAP 报表用 `subTimeZone` 选择实际数据分区：`8` 为北京时间，`0` 为 UTC（网页标注“账户时区”）；省略时 默认 `0`。不能仅传 `timeZone: Asia/Shanghai` 就声称查询了北京时间分区；未确定时区时先追问。
+   IAP 同期表或用户标签分析涉及自定义标签、用户标签、商品 ID 时，先读 [项目关联候选](references/project-dimensions.md)：明确非空 `appList` 后获取对应真实候选，再选择动态维度或筛选；未选择项目先追问，空集合不虚构，项目切换重新校验继承条件。
    优化师先调用 `bi_get_pitcher_list` 获取真实候选；IAP 同期、IAA 综合/同期、合格率的 `pitcherList` 使用 `nickName` 姓名精确匹配，不能用 `shortName` 缩写、相似姓名或猜测值替代。完整候选找不到就停止，不删除优化师条件改查全部。候选只返回姓名和缩写，不含邮箱/用户 ID；其他报表仅有同名参数不代表支持筛选。
 在处理权限拒绝、字段裁剪或模板分页口径变化时，读取 [报表与字段授权](references/report-authorization.md)。项目权限不能代替报表菜单权限；显式字段越权停止整次查询，无法确认权限不等于已证明无权限。
 
-6. 按顺序调用工具，同一用户所有维度和业务 HTTP 请求的启动间隔至少一秒。校验流程也会消耗时间；不要并发发送或为减少等待跳过维度校验。
+6. 独立查询可以并发，无同用户串行和一秒间隔要求；依赖候选结果的步骤仍按依赖顺序执行，不跳过校验。同用户、同接口、同最终有效参数的查询在执行中会防重，包括模板与直接报表；不同日期、指标、筛选或分页可以并发。
 7. `PARAM_NOT_ALLOWED`：告知用户不能使用该参数，不删除非法值后查询剩余项目。`PARAM_VALIDATION_UNAVAILABLE`：说明无法验证，不宣称无权限；候选被截断或标签键值关系无法验证时停止该查询。
    契约标记 `validationAvailability: source-outside-current-allowlist` 的筛选（负责人、产品组、城市等）尚不能验证真实候选；`report-filter-not-supported` 表示当前报表没有已确认生效的筛选映射，非空值会被拒绝。不能通过省略用户指定筛选或改成全部值绕过；分组字段与这些筛选参数分别判断。
-8. `RATE_LIMITED`/`USER_BUSY`：按 retryAfterMs 等待，只有实际完成等待/重试后才报告已执行；工具未连接时明确说明未执行。最多重新提交一次；仍失败则报告状态，避免反复轮询。`USER_BLOCKED`/`UPSTREAM_UNCERTAIN`：停止重试，交由运维确认上游是否结束。`UNAUTHENTICATED`：更新 token 后再使用。
+8. `DUPLICATE_QUERY`：相同查询仍在执行，本次未发送、不共享结果；等待原查询确认结束后才可重新提交，不轮询或换 token 绕过。`QUERY_BLOCKED`/`UPSTREAM_UNCERTAIN` 或 `uncertain: true`：停止该查询的自动重试，交由运维核实；其他不同查询可继续。`USER_BLOCKED` 表示旧版用户记录尚未核实，不能绕过。`UPSTREAM_RATE_LIMITED` 保留上游限流含义。工具未连接时说明未执行；`UNAUTHENTICATED` 更新 token 后再使用。
 9. 以实际 `code/msg/data` 回答。`code=0` 为成功，`code=1` 为业务失败，IAP 同期表的 `201` 为带提示结果，保留原 msg。HTTP 成功不代表有数据。
    `FILTER_NOT_SUPPORTED` 表示该筛选已确认不能可靠执行：说明限制并停止，不删除条件重查；同期群指标的展示与筛选支持范围见上述映射。
 

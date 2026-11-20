@@ -4,7 +4,7 @@
 
 | 工具 | 用途 |
 | --- | --- |
-| `bi_get_user_tags` | 获取 AB LTV 报表中的用户标签键名列表 |
+| `bi_get_user_tags` | 获取 AB LTV 报表中的用户标签键名列表；必须先明确选择非空 appList，再校验项目和报表字段权限；完整空候选表示所选项目没有可选项。 |
 | `bi_get_user_label_values` | 获取 AB LTV 报表中的用户标签值列表 |
 | `bi_query_ab_ltv_index_page` | 查询 AB测试用户LTV 指标表（分页） |
 | `bi_get_ad_network_names` | 获取变现渠道和细分渠道的级联候选。 |
@@ -29,7 +29,7 @@
 | `bi_qualification_rate_ds_report` | 查询合格率报表 |
 | `bi_iap_renew_refund_report` | 查询 IAP 同期续订/退款表  |
 | `bi_iap_cohort_roi_trend_report` | 查询 IAP 同期 ROI 趋势表 |
-| `bi_get_iap_sku_period_data` | 根据项目获取对应的 SKU 信息 |
+| `bi_get_iap_sku_period_data` | 根据项目获取对应的 SKU 信息；必须先明确选择非空 appList，再校验项目和报表字段权限；完整空候选表示所选项目没有可选项。 |
 | `bi_query_summary` | 查询订阅 原始数据汇总指标。 |
 | `bi_query_page` | 查询订阅 原始数据分页列表。 |
 | `bi_list_fields` | 查询订阅 原始数据字段说明。 |
