@@ -6,6 +6,7 @@
 | --- | --- |
 | `bi_get_user_tags` | 获取 AB LTV 报表中的用户标签键名列表；必须先明确选择非空 appList，再校验项目和报表字段权限；完整空候选表示所选项目没有可选项。 |
 | `bi_get_user_label_values` | 获取 AB LTV 报表中的用户标签值列表 |
+| `bi_get_user_tag_pairs` | 获取目标报表已授权项目内完整的标签键值配对，不分页或截断。；必须先明确选择非空 appList，再校验项目和报表字段权限；完整空候选表示所选项目没有可选项。 |
 | `bi_query_ab_ltv_index_page` | 查询 AB测试用户LTV 指标表（分页） |
 | `bi_get_ad_network_names` | 获取变现渠道和细分渠道的级联候选。 |
 | `bi_get_dimensions` | 获取事业部名称和对账人下拉项。 |
