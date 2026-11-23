@@ -35,7 +35,7 @@ description: 使用已鉴权的 BI MCP 查询项目、报表、用户保存的�
 
 6. 独立查询可以并发，无同用户串行和一秒间隔要求；依赖候选结果的步骤仍按依赖顺序执行，不跳过校验。同用户、同接口、同最终有效参数的查询在执行中会防重，包括模板与直接报表；不同日期、指标、筛选或分页可以并发。
 7. `PARAM_NOT_ALLOWED`：告知用户不能使用该参数，不删除非法值后查询剩余项目。`PARAM_VALIDATION_UNAVAILABLE`：说明无法验证，不宣称无权限；候选被截断或标签键值关系无法验证时停止该查询。现有 BI 仅提供独立标签键和值列表，不能证明键值归属；动态标签值筛选继续拒绝，不调用不存在的配对接口。按标签维度分组只需用 `bi_get_user_tags` 验证真实键，保留精确拼写和大小写。
-   契约标记 `validationAvailability: source-outside-current-allowlist` 的筛选（负责人、产品组、城市等）尚不能验证真实候选；`report-filter-not-supported` 表示当前报表没有已确认生效的筛选映射，非空值会被拒绝。不能通过省略用户指定筛选或改成全部值绕过；分组字段与这些筛选参数分别判断。
+   城市、负责人、产品组和广告类型先读 [业务维度候选](references/business-dimensions.md)，调用对应真实候选工具并按目标报表使用正确参数。产品组名称定位到部门树节点后，按网页行为展开该节点和全部子节点；直接 ID 集合与保存模板不自动展开。负责人空候选不改用全部用户，也不删除筛选。`source-outside-current-allowlist` 表示其他来源尚未接入；`report-filter-not-supported` 表示该报表没有已确认生效的筛选映射。不能省略用户条件或改成全部值绕过；分组、筛选及排序分别判断。
 8. `DUPLICATE_QUERY`：相同查询仍在执行，本次未发送、不共享结果；等待原查询确认结束后才可重新提交，不轮询或换 token 绕过。`QUERY_BLOCKED`/`UPSTREAM_UNCERTAIN` 或 `uncertain: true`：停止该查询的自动重试，交由运维核实；其他不同查询可继续。`USER_BLOCKED` 表示旧版用户记录尚未核实，不能绕过。`UPSTREAM_RATE_LIMITED` 保留上游限流含义。工具未连接时说明未执行；`UNAUTHENTICATED` 更新 token 后再使用。
 9. 以实际 `code/msg/data` 回答。`code=0` 为成功，`code=1` 为业务失败，IAP 同期表的 `201` 为带提示结果，保留原 msg。HTTP 成功不代表有数据。
    `FILTER_NOT_SUPPORTED` 表示该筛选已确认不能可靠执行：说明限制并停止，不删除条件重查；同期群指标的展示与筛选支持范围见上述映射。

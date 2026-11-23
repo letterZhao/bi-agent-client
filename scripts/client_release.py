@@ -30,6 +30,7 @@ CLIENT_FILES = (
             "report-authorization",
             "ad-performance-analysis",
             "project-dimensions",
+            "business-dimensions",
         )
     ),
     *(
@@ -50,10 +51,19 @@ LEGACY_1_1_CLIENT_FILES = tuple(
     name
     for name in CLIENT_FILES
     if name
-    not in {SKILL + "references/ad-performance-analysis.md", SKILL + "references/project-dimensions.md"}
+    not in {
+        SKILL + "references/ad-performance-analysis.md",
+        SKILL + "references/project-dimensions.md",
+        SKILL + "references/business-dimensions.md",
+    }
 )
 LEGACY_1_2_CLIENT_FILES = tuple(
-    name for name in CLIENT_FILES if name != SKILL + "references/project-dimensions.md"
+    name
+    for name in CLIENT_FILES
+    if name not in {SKILL + "references/project-dimensions.md", SKILL + "references/business-dimensions.md"}
+)
+LEGACY_1_3_CLIENT_FILES = tuple(
+    name for name in CLIENT_FILES if name != SKILL + "references/business-dimensions.md"
 )
 
 
@@ -221,6 +231,12 @@ def validate_tree(root):
             previous_tree = set(LEGACY_1_2_CLIENT_FILES) | set(SUPPORT_FILES) | {"release-input.json"}
             if old_metadata.get("serverVersion") == "1.2.1" and set(names) == previous_tree:
                 historical_clients = LEGACY_1_2_CLIENT_FILES
+            previous_tree = set(LEGACY_1_3_CLIENT_FILES) | set(SUPPORT_FILES) | {"release-input.json"}
+            if (
+                old_metadata.get("serverVersion") in {"1.3.0", "1.3.1", "1.3.2"}
+                and set(names) == previous_tree
+            ):
+                historical_clients = LEGACY_1_3_CLIENT_FILES
             if set(names) != set(historical_clients) | set(SUPPORT_FILES) | {"release-input.json"}:
                 fail("HISTORY_ALLOWLIST")
             message = git(root, "show", "-s", "--format=%B", commit)
