@@ -34,7 +34,7 @@ description: 使用已鉴权的 BI MCP 查询项目、报表、用户保存的�
 在处理权限拒绝、字段裁剪或模板分页口径变化时，读取 [报表与字段授权](references/report-authorization.md)。项目权限不能代替报表菜单权限；显式字段越权停止整次查询，无法确认权限不等于已证明无权限。
 
 6. 独立查询可以并发，无同用户串行和一秒间隔要求；依赖候选结果的步骤仍按依赖顺序执行，不跳过校验。同用户、同接口、同最终有效参数的查询在执行中会防重，包括模板与直接报表；不同日期、指标、筛选或分页可以并发。
-7. `PARAM_NOT_ALLOWED`：告知用户不能使用该参数，不删除非法值后查询剩余项目。`PARAM_VALIDATION_UNAVAILABLE`：说明无法验证，不宣称无权限；候选被截断或标签键值关系无法验证时停止该查询。动态标签先用 `bi_get_user_tag_pairs`，明确 `appList` 和目标 `reportCode`（`iapReport` / `userLabelReport`），候选返回真实 `appCode/tagKey/tagValue` 配对；精确 EQ 区分大小写并按键验证值，LK/NotLK 验证键而不把子串当完整值。多项目候选是并集，不证明每个项目都具备该配对。旧服务未提供配对接口时仍停止，不用独立键列表和值列表推断对应关系。
+7. `PARAM_NOT_ALLOWED`：告知用户不能使用该参数，不删除非法值后查询剩余项目。`PARAM_VALIDATION_UNAVAILABLE`：说明无法验证，不宣称无权限；候选被截断或标签键值关系无法验证时停止该查询。现有 BI 仅提供独立标签键和值列表，不能证明键值归属；动态标签值筛选继续拒绝，不调用不存在的配对接口。按标签维度分组只需用 `bi_get_user_tags` 验证真实键，保留精确拼写和大小写。
    契约标记 `validationAvailability: source-outside-current-allowlist` 的筛选（负责人、产品组、城市等）尚不能验证真实候选；`report-filter-not-supported` 表示当前报表没有已确认生效的筛选映射，非空值会被拒绝。不能通过省略用户指定筛选或改成全部值绕过；分组字段与这些筛选参数分别判断。
 8. `DUPLICATE_QUERY`：相同查询仍在执行，本次未发送、不共享结果；等待原查询确认结束后才可重新提交，不轮询或换 token 绕过。`QUERY_BLOCKED`/`UPSTREAM_UNCERTAIN` 或 `uncertain: true`：停止该查询的自动重试，交由运维核实；其他不同查询可继续。`USER_BLOCKED` 表示旧版用户记录尚未核实，不能绕过。`UPSTREAM_RATE_LIMITED` 保留上游限流含义。工具未连接时说明未执行；`UNAUTHENTICATED` 更新 token 后再使用。
 9. 以实际 `code/msg/data` 回答。`code=0` 为成功，`code=1` 为业务失败，IAP 同期表的 `201` 为带提示结果，保留原 msg。HTTP 成功不代表有数据。
