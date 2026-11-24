@@ -12,7 +12,7 @@
 
 ```powershell
 $ErrorActionPreference = 'Stop'
-$version = '1.4.0_test'
+$version = '1.4.1_test'
 $dir = Join-Path $env:USERPROFILE "Downloads\bi-agent-$version"
 New-Item -ItemType Directory -Force -Path $dir | Out-Null
 Set-Location $dir
@@ -65,7 +65,7 @@ WSL 或远程执行环境需要在实际执行 Agent 的环境安装和配置，
 已安装 Git 和 Node.js ≥22.20 的用户，可在项目目录执行：
 
 ```bash
-npx --yes skills@1.9.0 add 'https://github.com/letterZhao/bi-agent-client.git#1.4.0_test' --skill bi-query --agent codex --copy --yes
+npx --yes skills@1.9.0 add 'https://github.com/letterZhao/bi-agent-client.git#1.4.1_test' --skill bi-query --agent codex --copy --yes
 ```
 
 Claude Code 改用 `--agent claude-code`。无需 Node.js 的用户直接安装 ZIP。

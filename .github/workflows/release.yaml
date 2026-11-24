@@ -8,12 +8,12 @@ on:
       tag:
         description: Existing immutable release tag
         required: true
-        default: 1.4.0_test
+        default: 1.4.1_test
         type: string
 permissions:
   contents: read
 env:
-  RELEASE_TAG: ${{ inputs.tag || (github.ref_type == 'tag' && github.ref_name) || '1.4.0_test' }}
+  RELEASE_TAG: ${{ inputs.tag || (github.ref_type == 'tag' && github.ref_name) || '1.4.1_test' }}
 concurrency:
   group: client-${{ github.ref }}
   cancel-in-progress: false

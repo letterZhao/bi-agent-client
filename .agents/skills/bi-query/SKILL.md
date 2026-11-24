@@ -17,6 +17,8 @@ description: 使用已鉴权的 BI MCP 查询项目、报表、用户保存的�
 缺少当前服务不支持的数据时说明缺口，不编造指标，不声称已调整预算或关闭广告。
 未提供回本目标时可先做历史及同龄同期群的相对比较，标注目标缺失及其影响，不套用通用行业关停线。
 
+IAA 同期表涉及小时／周／月／日（小时口径）或 H-N 截止时，按需读取 [同期指标与日期口径](references/cohort-metrics.md)，核对 dateDimension 与截止适用条件。
+
 ## BI 查询与校验
 
 1. 确认 MCP 已配置用户登录 BI 后获得的 个人访问凭据：仅使用 Cookie 的值，由客户端通过 Bearer 头发送。Codex、Claude Code 可引用进程 `BI_ACCESS_TOKEN` 环境变量；WorkBuddy 桌面端按对应版本在个人 MCP 请求头中配置，不假设支持变量展开；DeepSeek Harness 使用 `${credential:BI_ACCESS_TOKEN}` 引用其凭据提供方（也可读取进程环境）。不要混用客户端配置语法。服务端验证当前登录状态，不需要 OAuth 客户端凭据。缺少或过期时，要求用户重新登录 BI、更新对应客户端凭据并重新连接；不要在聊天、参数、日志或文档中索取或展示 token，也不要代用户登录或自动刷新 token。

@@ -2,15 +2,15 @@
   "audience": "public",
   "expectedToolCount": 47,
   "files": {
-    ".agents/skills/bi-query/SKILL.md": "1904b7cc361c51140a82c4b9be111bb27af3c2d0dede9c07c596328f6eeedaa9",
+    ".agents/skills/bi-query/SKILL.md": "acd9bbf5c454273778e0a328126b2338d9f5cbb20f4d4a056abb3b5be9c6ae34",
     ".agents/skills/bi-query/references/ad-performance-analysis.md": "3a4e200cc7eb5c0eb9c4cbf1b2be6a805b4781bc58b465b71d3da2d749918c70",
     ".agents/skills/bi-query/references/business-dimensions.md": "34bb1e76146e6cfd56a741a94b57f5afc4fac7d81f9d08e22d26840ca88ba881",
-    ".agents/skills/bi-query/references/cohort-metrics.md": "eebe4a66a51a71a1455df7c8d14d703f44ec887012cefe33e018bb59a4db5edc",
+    ".agents/skills/bi-query/references/cohort-metrics.md": "4aaa642588dc7c48b01fcd5eb051a85e2fff548dd14727348b82d33ef96084ed",
     ".agents/skills/bi-query/references/interfaces.md": "863a5516ea9c63e3d26b713199641706bd09b17045e66d9c408c325335059a82",
     ".agents/skills/bi-query/references/project-dimensions.md": "afe13f7a9cdacded9944c7ba71320540885c4e9040e816a27dd4d61bc028149c",
     ".agents/skills/bi-query/references/report-authorization.md": "405d40c5dedc914e11d0219403dd49a42f6102e6462d1f0eb19b60f543c29e58",
     ".agents/skills/bi-query/references/report-templates.md": "15a70f7abbc25f03c5c9c9fdd00abc1700931f5ccbe7e89c5d356ac7854b1248",
-    "README.md": "aaf189c3f613536c7ac5bd5553e92deb6dad3d1980acc0844bdd36c4b6d3a4f1",
+    "README.md": "78c8242b57297de53f5eb51612fb42fe1879f320a0310da1a1f26136b4989553",
     "docs/claude.mcp.json.example": "76b668e5564bf587f62bbc4cbc196b27d596b6eba3f1c7eb9f60c80c38fee98e",
     "docs/client-compatibility.md": "22a152a9cf848771e59f6f6f8c413cca875b56b9dc23f688a0439fdba6799aec",
     "docs/codex.toml.example": "a15ccf7b9e5b1e8ddd6dda22064f3e498c44f7bb9ac10dab84048b97df2da1b2",
@@ -18,11 +18,11 @@
     "docs/workbuddy.mcp.json.example": "f69b8236d0e44c95c19c7f9ad1b01bc42e672f467e0d9223a8810248fcbd302d"
   },
   "policyVersion": "public-client-v1",
-  "serverVersion": "1.4.0",
-  "sourceCommit": "b363c86998de6dca75c64432ee7e0eb6a9d4a328",
+  "serverVersion": "1.4.1",
+  "sourceCommit": "80219e0b48fd844d88caca58dec28915d47ce769",
   "supportFiles": {
-    ".github/workflows/release.yaml": "353506d3a22f1c1218b924a0864d352aa1f67602ab4c184996075638876f71f5",
-    "release-notes.md": "87c196f2127e70cc22cd3078a3dcdbd91f6916a39443140ec5b1f4c78aa8d294",
+    ".github/workflows/release.yaml": "db698b194f47a668193569b8daf1dfceb9e95aab2fa043bb9122e1adab098646",
+    "release-notes.md": "3cd0b28b1c0715188674588afd877d61d98ce8d8390485df8c3cfb12b8f55c85",
     "scripts/client_release.py": "1170805a6a3fe4869001ad41a0066f8bd4b68b74dbc7194e9098fe2a5a5bf023"
   }
 }
