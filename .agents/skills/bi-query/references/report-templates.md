@@ -20,6 +20,13 @@
 
 合格率总览后台固定按项目、平台、渠道、优化师分组，以后台当前日期计算近 3/7 日指标；模板日期作用于明细，不能把总览描述成任意指定历史期间。总览页码、页大小、排序与明细独立。
 
+总览当前可展示的维度只有 `pitcher`、`app`、`networkName`；平台是后台内部聚合键，
+不代表当前网页有平台展示列或用户拥有该字段权限。总览使用自己的近3/7日八项指标，
+不能使用明细的 `qualification_rate`、等级消耗/占比等字段。明确要求总览展示平台等
+不支持字段时停止该请求，指出具体字段；不得删除后改查三项维度并宣称原请求成功。
+直接总览查询须传成对日期供 BI 控制器预检，例如本次查询日；后台仍覆盖为当前日的滚动口径，
+不可据入参日期声称查到了历史总览。完整字段以配套版本的 MCP 契约为准。
+
 `adjustments` 逐项列出权限裁剪、未启用控件清理、排序补全等。报告裁剪项；裁剪后没有指标时 `TEMPLATE_NO_VISIBLE_METRICS` 会停止查询。筛选值无权使用仍是 `PARAM_NOT_ALLOWED`，不会被裁剪后继续查询。无法完整验证则 `PARAM_VALIDATION_UNAVAILABLE`；元数据或字段权限服务异常则 `TEMPLATE_VALIDATION_UNAVAILABLE`。
 
 `TEMPLATE_NOT_FOUND_OR_FORBIDDEN` 同时涵盖不存在、删除或无权读取，不进一步判断其他用户是否存在该模板。`TEMPLATE_UNSUPPORTED` 拒绝弃用或未接入类型；`TEMPLATE_INVALID` 拒绝畸形 JSON、未知有效参数或不能还原的模板，不替换成默认报表。`FILTER_NOT_SUPPORTED` 的条件不能删除后报告成功。

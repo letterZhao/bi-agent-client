@@ -4,6 +4,8 @@
 
 - `REPORT_NOT_ALLOWED`：没有目标报表菜单，停止，不换接口绕过。
 - `FIELD_NOT_ALLOWED`：显式维度、指标、周期、筛选或排序未授权。整次停止，不能删字段后声称完成。
+  有 `details` 时按 `field`、`permissionField`、`parameter` 说明被拒字段和入参位置；
+  `businessQuerySent: false` 表示未发起业务请求。不能把某个字段被拒扩展为整张报表无权限。
 - `PERMISSION_VALIDATION_UNAVAILABLE`：无法确认权限，可能是权限接口失败、结构异常或缺少参数与字段映射；不能宣称已经证明无权限。读取当前契约 `queryCapabilities.authorization.unmappedParameters` 了解具体不可用参数。
 - `PARAM_NOT_ALLOWED` 与 `PARAM_VALIDATION_UNAVAILABLE` 仍分别表示候选不允许和候选无法验证。
 
